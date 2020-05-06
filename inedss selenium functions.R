@@ -278,6 +278,14 @@ determine_case_match <- function(){
   #Count number of case entries
   numCases <- length(rD$findElement(using = "css", value =".indessTable")$findChildElements(using = "css", "tbody > tr"))
   
+  #Check current jurisdiction of patient
+  jurisidiction <- get_text(paste0(".indessTable > tbody:nth-child(1) > tr:nth-child(", numCases,") > td:nth-child(7)"))
+  
+  #Exit if not Cook
+  if (!grepl("Cook", jurisidiction)) {
+    return("OOJ")
+  }
+  
   #Search for previous COVID case
   for (i in 2:numCases) {
     

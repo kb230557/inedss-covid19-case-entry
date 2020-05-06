@@ -67,10 +67,24 @@ for (i in 1:nrow(testData)) {
     #Click patient name
     click(paste0("#container > div:nth-child(4) > form:nth-child(3) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(1) > table:nth-child(6) > tbody:nth-child(1) > tr:nth-child(",matchStatus$row,") > td:nth-child(2) > a:nth-child(1)"))
     
-    #Determine if previously reported COVID case
+    #Determine if previously reported COVID case or out of jurisidiction
     caseRow <- determine_case_match()
     
-    #If previously reported, add new lab
+    #If patient is currently out of jurisdiction, write to CSV for manual entry/follow up
+    if(caseRow == "OOJ") {
+      
+      #write patient to csv to flag for manual entry     
+      write_csv(case, manual_path, append = T)
+      
+      #Return to dashboard
+      click("th.dataTableNotSelected:nth-child(1) > a:nth-child(1)")
+      
+      #Skip rest next iteration of loop
+      next
+      
+    }
+    
+    #If in jurisidiction and previously reported COVID, add new lab
     if (!is.na(caseRow)) {
       
       #Click into disease
@@ -103,7 +117,7 @@ for (i in 1:nrow(testData)) {
     
   } else if (matchStatus$patientMatchFound == "unclear" | newPersonDisabled== "true") {   ### Unable to determine ###
     
-    #write patient to csv to flag for manual entry     ##Monitor to ensure column order continues writing correctly
+    #write patient to csv to flag for manual entry     
     write_csv(case, manual_path, append = T)
     
     #Return to dashboard
