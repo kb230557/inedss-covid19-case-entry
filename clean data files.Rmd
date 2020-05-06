@@ -39,18 +39,51 @@ Notes:
 #key_set("pic_contact_phone")
 
 #Catch-up file
-cases_pic <- read_excel("Test Data/PIC/Cook_ALL_FORMAT.xlsx") %>%
+# cases_pic <- read_excel("Test Data/PIC/Cook_ALL_FORMAT.xlsx") %>%
+#   rename_all(tolower) %>%
+#   rename(specimenCollectionDate = svc_date,
+#          address = address1,
+#          phone = pat_phone,
+#          phone2 = cell_phone,
+#          orderingProvider = `ordering provider`
+#          ) %>%
+#   filter(itemresults == "Positive"  & labcompanyname != "Quest") %>%  
+#   filter(!(city %in% c("SKOKIE", "EVANSTON", "OAK PARK", "STICKNEY", "CHICAGO"))) %>%
+#   mutate(orderingFacility = paste('Physicians Immediate Care', clinic, sep = "-"),
+#          dob = excel_numeric_to_date(birthdate),
+#          firstName = str_to_title(first_name),
+#          lastName = str_to_title(last_name),
+#          reporterFirst = key_get("pic_contact_first"),
+#          reporterLast = key_get("pic_contact_last"),
+#          reporterPhone = key_get("pic_contact_phone"),
+#          reporterOrganizationName = "Physicians Immediate Care",
+#          state = state.name[match(state,state.abb)],
+#          orderingProviderLast = str_extract(orderingProvider, "[^,]+"),
+#          orderingProviderFirst = str_extract(orderingProvider, '\\b[^,]+$'),
+#          orderingProviderFirst = ifelse(nchar(orderingProviderFirst < 2), NA, orderingProviderFirst)
+#          )%>%
+#   mutate(earliestReportDate = as.Date(specimenCollectionDate)) %>%  
+#   #Catch up document sent on 4/28 but will use specimen date here, otherwise will create a misleading false peak in our epicurve
+#   select(one_of(dataDictionary$Variable))
+
+
+#Files going forward
+date_extension <- paste(month(Sys.Date() - 1),day(Sys.Date() - 1), sep = ".")
+
+cases_pic <- read_excel(paste0("Test Data/PIC/Cook ", date_extension,".xlsx")) %>%
   rename_all(tolower) %>%
   rename(specimenCollectionDate = svc_date,
          address = address1,
          phone = pat_phone,
          phone2 = cell_phone,
-         orderingProvider = `ordering provider`
+         orderingProvider = `ordering provider`,
+         dob = birthdate
          ) %>%
   filter(itemresults == "Positive"  & labcompanyname != "Quest") %>%  
   filter(!(city %in% c("SKOKIE", "EVANSTON", "OAK PARK", "STICKNEY", "CHICAGO"))) %>%
+  filter(county == "Cook") %>%
   mutate(orderingFacility = paste('Physicians Immediate Care', clinic, sep = "-"),
-         dob = excel_numeric_to_date(birthdate),
+         #dob = excel_numeric_to_date(birthdate),
          firstName = str_to_title(first_name),
          lastName = str_to_title(last_name),
          reporterFirst = key_get("pic_contact_first"),
@@ -62,8 +95,7 @@ cases_pic <- read_excel("Test Data/PIC/Cook_ALL_FORMAT.xlsx") %>%
          orderingProviderFirst = str_extract(orderingProvider, '\\b[^,]+$'),
          orderingProviderFirst = ifelse(nchar(orderingProviderFirst < 2), NA, orderingProviderFirst)
          )%>%
-  mutate(earliestReportDate = as.Date(specimenCollectionDate)) %>%  
-  #Catch up document sent on 4/28 but will use specimen data here, otherwise will create a misleading false peak in our epicurve
+  mutate(earliestReportDate = Sys.Date()) %>%  #Generally will be Sys.Date but set manually to email date if not running same day 
   select(one_of(dataDictionary$Variable))
 
 

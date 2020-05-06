@@ -40,7 +40,7 @@ start_server()
 #Log in to INEDSS
 login_inedss()
 
-#Start loop to enter cases    ###### ALWAYS RESET BACK TO 1 ######
+#Start loop to enter cases    ###### ALWAYS RESET BACK TO 1 IF CHANGING######
 for (i in 1:nrow(testData)) {
   
   #Subset data frame by row number (as dictated by current loop iteration)
@@ -53,10 +53,11 @@ for (i in 1:nrow(testData)) {
   search_name(case$firstName, case$lastName, case$sex, case$dob)
   
   #Seems to freeze here a lot, adding a wait
-  #Sys.sleep(2)
+  Sys.sleep(3)
   
   #Determine if patient match has been found on the page
   matchStatus <- determinePatientMatch(match_prob_low)
+  #matchStatus$patientMatchFound <- "no match"   #Line to help if running cases through loop manually, always leave disabled
   
   #Determine if add new person enabled(if not, save for manual entry)
   newPersonDisabled <- try(rD$findElement("css", "input[name = \"addPerson\"]")$getElementAttribute("disabled")[[1]])
@@ -71,7 +72,7 @@ for (i in 1:nrow(testData)) {
     caseRow <- determine_case_match()
     
     #If patient is currently out of jurisdiction, write to CSV for manual entry/follow up
-    if(caseRow == "OOJ") {
+    if(!is.na(caseRow) & caseRow == "OOJ") {
       
       #write patient to csv to flag for manual entry     
       write_csv(case, manual_path, append = T)
@@ -79,13 +80,25 @@ for (i in 1:nrow(testData)) {
       #Return to dashboard
       click("th.dataTableNotSelected:nth-child(1) > a:nth-child(1)")
       
-      #Skip rest next iteration of loop
+      #Skip rest of script and move to next iteration of loop
       next
       
     }
     
     #If in jurisidiction and previously reported COVID, add new lab
     if (!is.na(caseRow)) {
+      
+      #For now, if case completed, exit without entering lab so case doesn't need to be retracted
+      #If reinfection parameters defined, will need to adjust this step
+      investigationStatus <- get_text(paste0(".indessTable > tbody:nth-child(1) > tr:nth-child(", caseRow,") > td:nth-child(5)"))
+      if (grepl("Completed|Closed", investigationStatus)) {
+        
+        #Return to dashboard
+        click("th.dataTableNotSelected:nth-child(1) > a:nth-child(1)")
+        
+        #Skip rest of script and move to next iteration of loop
+        next
+      }
       
       #Click into disease
       click(paste0(".indessTable > tbody:nth-child(1) > tr:nth-child(", caseRow, ") > td:nth-child(1) > a:nth-child(1)"))
@@ -165,6 +178,9 @@ for (i in 1:nrow(testData)) {
   
 } #loop closure
 
+
+#Lines to import data if running saved cases back through the loop manually
+#testData <- read_csv(manual_path)
 
 #end session
 stop_server()
