@@ -157,23 +157,23 @@ login_inedss = function(){
   
   #Mousing over applications button
   rD$findElement(using = "xpath", value = '//*[@id="zz6_RootAspMenu"]/li/ul/li[1]/a/span/span')$mouseMoveToLocation()
-  
+
   #Finding production apps button
   rD$findElement(using = "xpath", value = '//*[@id="zz6_RootAspMenu"]/li/ul/li[1]/a')$clickElement()
-  
+
   #Finding INEDSS buttons  -- IMPORTANT: XPATH WILL BE DIFFERENT DEPENDING ON APPS USER HAS
-  ifVisiblethenClick('//*[@id="column"]/table[5]/tbody/tr/td[2]/a', selectorType = "xpath") 
-  
+  ifVisiblethenClick('//*[@id="column"]/table[5]/tbody/tr/td[2]/a', selectorType = "xpath")
+
   #Pausing execution to give time to load page
   Sys.sleep(10)
-  
-  #Switching focus to INEDSS tab   
-  windows <- rD$getWindowHandles()   
+
+  #Switching focus to INEDSS tab
+  windows <- rD$getWindowHandles()
   rD$switchToWindow(windows[[2]])
-  
+
   #Clicking login button
   rD$findElement(using = "css", value = "input[name = \"login\"]")$clickElement()
-  
+
   #Pausing execution to give time to load page
   Sys.sleep(5)
 }

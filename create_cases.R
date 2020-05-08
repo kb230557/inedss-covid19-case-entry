@@ -22,6 +22,7 @@ match_prob_low <- 90
 
 #Import test data
 testData <- read_csv("testData.csv") %>% distinct()
+#testData <- read_csv("Test Data/Sample/testData.csv")
 
 #Import default values from data dictionary
 defaults <- read_excel("Data Dictionary.xlsx") %>% 
@@ -57,7 +58,11 @@ for (i in 1:nrow(testData)) {
   
   #Determine if patient match has been found on the page
   matchStatus <- determinePatientMatch(match_prob_low)
-  #matchStatus$patientMatchFound <- "no match"   #Line to help if running cases through loop manually, always leave disabled
+  
+  #Lines to help if running cases through loop manually, always leave disabled
+  #matchStatus$patientMatchFound <- "no match"   
+  #matchStatus$patientMatchFound <- "match" 
+  #matchStatus$row <- 3
   
   #Determine if add new person enabled(if not, save for manual entry)
   newPersonDisabled <- try(rD$findElement("css", "input[name = \"addPerson\"]")$getElementAttribute("disabled")[[1]])
