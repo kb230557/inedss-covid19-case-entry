@@ -22,7 +22,6 @@ match_prob_low <- 90
 
 #Import test data
 testData <- read_csv("testData.csv") %>% distinct()
-#testData <- read_csv("Test Data/Sample/testData.csv")
 
 #Import default values from data dictionary
 defaults <- read_excel("Data Dictionary.xlsx") %>% 
@@ -54,7 +53,7 @@ for (i in 1:nrow(testData)) {
   search_name(case$firstName, case$lastName, case$sex, case$dob)
   
   #Seems to freeze here a lot, adding a wait
-  Sys.sleep(3)
+  Sys.sleep(5)
   
   #Determine if patient match has been found on the page
   matchStatus <- determinePatientMatch(match_prob_low)
@@ -186,6 +185,7 @@ for (i in 1:nrow(testData)) {
 
 #Lines to import data if running saved cases back through the loop manually
 #testData <- read_csv(manual_path)
+#i <- 1
 
 #end session
 stop_server()

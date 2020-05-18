@@ -340,7 +340,7 @@ enter_demographics <- function(){
   enter_text_na("#city", case$city)
   
   enter_text_na("#zip", as.character(case$zip))
-  select_drop_down_na("#county", paste0("^",case$county,"$"))
+  select_drop_down_na("#county", paste0("^",case$county,"$"), field = case$county)
   
 }
 
@@ -454,7 +454,7 @@ enter_lab_data <- function(){
 enter_epi_data <- function(){
   
   #Click into epi section
-  click("fieldset.fieldsetNameBlock:nth-child(22) > legend:nth-child(1) > a:nth-child(2)")
+  click("fieldset.fieldsetNameBlock:nth-child(24) > legend:nth-child(1) > a:nth-child(2)")
   isPageLoaded("#case")
   
   #Enter case status
@@ -475,7 +475,7 @@ enter_epi_data <- function(){
 enter_reporter <- function(){
   
   #Click into reporting section
-  click("fieldset.fieldsetNameBlock:nth-child(24) > legend:nth-child(1) > a:nth-child(2)")
+  click("fieldset.fieldsetNameBlock:nth-child(26) > legend:nth-child(1) > a:nth-child(2)")
   isPageLoaded("#report")
   
   #Enter reporting dates
