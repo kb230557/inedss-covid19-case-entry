@@ -226,7 +226,7 @@ determinePatientMatch <- function(threshold_low) {
   
   #81%-99% match returned
   #Format case name for matching
-  case_name <- paste(str_to_title(case$lastName), str_to_title(case$firstName), sep = ", ")
+  case_name <- paste(str_to_title(case$lastName), str_to_title(case$firstName), sep = ",")
   #Remove middle inital if present
   case_name <- strsplit(case_name, " ")[[1]] %>%
     .[nchar(.) > 1] %>%

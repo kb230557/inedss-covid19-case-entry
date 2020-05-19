@@ -68,7 +68,7 @@ Notes:
 
 
 #Files going forward
-date_extension <- paste(month(Sys.Date() - 5),day(Sys.Date() - 5), sep = ".")
+date_extension <- paste(month(Sys.Date() - 1),day(Sys.Date() - 1), sep = ".")
 
 cases_pic <- read_excel(paste0("Test Data/PIC/Cook ", date_extension,".xlsx")) %>%
   rename_all(tolower) %>%
@@ -95,7 +95,7 @@ cases_pic <- read_excel(paste0("Test Data/PIC/Cook ", date_extension,".xlsx")) %
          orderingProviderFirst = str_extract(orderingProvider, '\\b[^,]+$'),
          orderingProviderFirst = ifelse(nchar(orderingProviderFirst < 2), NA, orderingProviderFirst)
          )%>%
-  mutate(earliestReportDate = Sys.Date() - 4) %>%  #Generally will be Sys.Date but set manually to email date if not running same day 
+  mutate(earliestReportDate = Sys.Date()) %>%  #Generally will be Sys.Date but set manually to email date if not running same day 
   select(one_of(dataDictionary$Variable))
 
 
